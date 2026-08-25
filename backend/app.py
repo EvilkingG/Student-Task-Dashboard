@@ -1,4 +1,9 @@
 import os
+import sys
+
+# Ensure backend directory is in sys.path
+sys.path.insert(0, os.path.dirname(__file__))
+
 import sqlite3
 from flask import Flask, request, jsonify, g, send_from_directory
 from flask_cors import CORS
