@@ -37,7 +37,7 @@ def health():
         'app': 'Student Task Planner API',
         'author': 'Shubham Singh',
         'instagram': '@shubhamss.roy',
-        'github': 'https://github.com/EvilkingG/student-task-planner'
+        'github': 'https://github.com/EvilkingG/Student-Task-Dashboard'
     }), 200
 
 # Authentication Endpoints

@@ -9,7 +9,7 @@ A modern, aesthetic full-stack task management application designed for students
 - **Developer & Author**: **Shubham Singh**
 - **Instagram**: [@shubhamss.roy](https://instagram.com/shubhamss.roy)
 - **GitHub Profile**: [EvilkingG](https://github.com/EvilkingG)
-- **GitHub Repository**: [https://github.com/EvilkingG/student-task-planner](https://github.com/EvilkingG/student-task-planner)
+- **GitHub Repository**: [https://github.com/EvilkingG/Student-Task-Dashboard](https://github.com/EvilkingG/Student-Task-Dashboard)
 
 ---
 
