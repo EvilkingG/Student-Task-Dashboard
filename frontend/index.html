@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Task Planner | Organize, Prioritize & Achieve</title>
+  <meta name="description" content="A full-stack task management application designed for students to track daily tasks, deadlines, priorities, and completion progress.">
+  
+  <!-- FontAwesome & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Navbar Header -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="#" class="brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div class="brand-title">Task<span>Planner</span></div>
+      </a>
+
+      <div class="nav-actions">
+        <button id="theme-toggle-btn" class="theme-toggle-btn" title="Toggle Light/Dark Theme">
+          <i id="theme-icon" class="fa-solid fa-sun"></i>
+        </button>
+
+        <div id="user-nav-badge" class="user-badge" style="display: none;">
+          <div id="user-avatar-initial" class="user-avatar">S</div>
+          <span id="user-display-name">Student</span>
+        </div>
+
+        <button id="logout-btn" class="btn btn-secondary btn-sm" style="display: none;">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- AUTHENTICATION VIEW (Login / Register) -->
+  <div id="auth-view" class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h2>Welcome Student!</h2>
+        <p>Log in to manage your tasks and boost productivity</p>
+      </div>
+
+      <!-- Auth Tabs -->
+      <div class="auth-tabs" style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+        <button id="tab-login" class="btn btn-secondary btn-sm active" style="flex: 1;">Login</button>
+        <button id="tab-register" class="btn btn-secondary btn-sm" style="flex: 1;">Register Account</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label" for="login-email">Email Address</label>
+          <input type="email" id="login-email" class="input-control" placeholder="student@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="login-password">Password</label>
+          <input type="password" id="login-password" class="input-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+          <i class="fa-solid fa-right-to-bracket"></i> Sign In
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" style="display: none;">
+        <div class="form-group">
+          <label class="form-label" for="reg-username">Full Name / Student Username</label>
+          <input type="text" id="reg-username" class="input-control" placeholder="Shubham Singh" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-email">Email Address</label>
+          <input type="email" id="reg-email" class="input-control" placeholder="shubham@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-password">Password (min 6 characters)</label>
+          <input type="password" id="reg-password" class="input-control" placeholder="••••••••" required minlength="6">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+          <i class="fa-solid fa-user-plus"></i> Create Account
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAIN DASHBOARD VIEW -->
+  <main id="dashboard-view" class="container" style="display: none;">
+
+    <!-- Dashboard Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-top: 2rem;">
+      <div>
+        <h1 style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800;">Student Task Dashboard</h1>
+        <p style="color: var(--text-muted); font-size: 1rem;">Track your study goals, assignments, and exam deadlines.</p>
+      </div>
+
+      <button id="btn-create-task" class="btn btn-primary">
+        <i class="fa-solid fa-plus"></i> Add New Task
+      </button>
+    </div>
+
+    <!-- Reminder Banner Container for Overdue / Approaching Tasks -->
+    <div id="reminder-banner-container" style="margin-top: 1.5rem;"></div>
+
+    <!-- Summary Metrics Section -->
+    <section class="dashboard-summary">
+      <div class="summary-grid">
+        <div class="metric-card">
+          <div class="metric-icon icon-total">
+            <i class="fa-solid fa-layer-group"></i>
+          </div>
+          <div class="metric-content">
+            <h4>Total Tasks</h4>
+            <div id="metric-total" class="metric-number">0</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon icon-pending">
+            <i class="fa-solid fa-clock"></i>
+          </div>
+          <div class="metric-content">
+            <h4>Pending</h4>
+            <div id="metric-pending" class="metric-number">0</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon icon-progress">
+            <i class="fa-solid fa-spinner"></i>
+          </div>
+          <div class="metric-content">
+            <h4>In Progress</h4>
+            <div id="metric-progress" class="metric-number">0</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon icon-completed">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div class="metric-content">
+            <h4>Completed</h4>
+            <div id="metric-completed" class="metric-number">0</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon icon-overdue">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <div class="metric-content">
+            <h4>Overdue</h4>
+            <div id="metric-overdue" class="metric-number">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Completion Rate Progress Card -->
+      <div class="progress-card">
+        <div class="progress-info" style="flex: 1;">
+          <h3>Overall Task Completion Progress</h3>
+          <p>Keep your momentum going by finishing pending assignments and projects on time.</p>
+          <div class="progress-bar-outer">
+            <div id="progress-bar-fill" class="progress-bar-inner"></div>
+          </div>
+        </div>
+
+        <div style="text-align: center; min-width: 120px;">
+          <div id="completion-rate-text" style="font-family: var(--font-heading); font-size: 2.8rem; font-weight: 800; background: linear-gradient(135deg, var(--accent-cyan), var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">0%</div>
+          <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">Completion Rate</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filters & Search Toolbar -->
+    <div class="toolbar">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="search-input" class="input-control search-input" placeholder="Search tasks by title, description, or subject...">
+      </div>
+
+      <div class="filter-group">
+        <select id="filter-status" class="filter-select">
+          <option value="All">All Statuses</option>
+          <option value="Pending">Pending</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+        </select>
+
+        <select id="filter-priority" class="filter-select">
+          <option value="All">All Priorities</option>
+          <option value="High">High Priority</option>
+          <option value="Medium">Medium Priority</option>
+          <option value="Low">Low Priority</option>
+        </select>
+
+        <select id="filter-timeframe" class="filter-select">
+          <option value="All">All Deadlines</option>
+          <option value="Due Today">Due Today</option>
+          <option value="Upcoming">Upcoming</option>
+          <option value="Overdue">Overdue</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Tasks Cards Grid -->
+    <div id="tasks-grid" class="tasks-grid"></div>
+  </main>
+
+  <!-- CREATE / EDIT TASK MODAL -->
+  <div id="task-modal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-title">Create New Task</h3>
+        <button id="modal-close-btn" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="task-form">
+        <div class="form-group">
+          <label class="form-label" for="task-title-input">Task Title *</label>
+          <input type="text" id="task-title-input" class="input-control" placeholder="e.g., Complete Mathematics Assignment Ch 4" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="task-desc-input">Description & Notes</label>
+          <textarea id="task-desc-input" class="input-control" placeholder="Add study notes, references, or submission instructions..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="task-category-input">Subject / Category</label>
+            <input type="text" id="task-category-input" class="input-control" placeholder="e.g. Physics, Project, General" value="General">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="task-due-date">Due Date *</label>
+            <input type="date" id="task-due-date" class="input-control" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="task-priority-input">Priority</label>
+            <select id="task-priority-input" class="input-control">
+              <option value="Low">Low Priority</option>
+              <option value="Medium" selected>Medium Priority</option>
+              <option value="High">High Priority</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="task-status-input">Initial Status</label>
+            <select id="task-status-input" class="input-control">
+              <option value="Pending" selected>Pending</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+          <button type="button" id="modal-cancel-btn" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer with Author Credits -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <p><strong>Student Task Planner</strong> &copy; 2026. Designed for Students & Individuals.</p>
+      <div class="footer-links">
+        <span><i class="fa-solid fa-user-gear"></i> Author: <strong>Shubham Singh</strong></span>
+        <a href="https://instagram.com/shubhamss.roy" target="_blank" rel="noopener">
+          <i class="fa-brands fa-instagram" style="color: #e1306c;"></i> @shubhamss.roy
+        </a>
+        <a href="https://github.com/EvilkingG/student-task-planner" target="_blank" rel="noopener">
+          <i class="fa-brands fa-github"></i> EvilkingG GitHub
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS Modules -->
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/tasks.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
